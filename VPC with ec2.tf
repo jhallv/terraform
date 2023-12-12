@@ -1,12 +1,12 @@
 
 provider "aws" {
-  region = "us-east-2"
+  region = var.location
 }
 
 resource "aws_instance" "ec2-terra" {
-    ami = "ami-06d4b7182ac3480fa"
-    key_name = "kp-1"
-    instance_type = "t2.micro"
+    ami = var.os-name
+    key_name = var.key
+    instance_type = var.instance-type
     subnet_id = aws_subnet.subnet_terra.id
     vpc_security_group_ids = [aws_security_group.terra-vpc-sg.id] 
 
@@ -14,13 +14,13 @@ resource "aws_instance" "ec2-terra" {
 
 //Create VPC
 resource "aws_vpc" "vpc-terra" {
-  cidr_block = "10.10.0.0/16"
+  cidr_block = var.vpc-cidr
 }
 
 //Create Subnet
 resource "aws_subnet" "subnet_terra" {
   vpc_id = aws_vpc.vpc-terra.id
-  cidr_block = "10.10.1.0/24"
+  cidr_block = var.subnet-cidr
 
   tags = {
     Name = "subnet_terra"
@@ -79,6 +79,7 @@ resource "aws_security_group" "terra-vpc-sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
 
   tags = {
     Name = "terra-vpc-sg"
